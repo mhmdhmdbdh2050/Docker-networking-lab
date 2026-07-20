@@ -165,6 +165,19 @@ docker-networking-lab/
     ├── third-image.jpg
     └── forth-image.jpg
 ```
+## 📸 Project Screenshots
+
+### Container Connectivity Testing
+![Container Connectivity Testing](screenshots/first-image.jpeg)
+
+### Docker Network Communication
+![Docker Network Communication](screenshots/second-image.jpeg)
+
+### Multi-Network Connectivity
+![Multi-Network Connectivity](screenshots/third-image.jpeg)
+
+### Successful Connectivity Verification
+![Successful Connectivity](screenshots/fourth-image.jpeg)
 
 ## 👤 Author
 
