@@ -160,10 +160,10 @@ It also highlights an important networking concept: a container connected to mul
 docker-networking-lab/
 ├── README.md
 └── screenshots/
-    ├── first-image.jpg
-    ├── second-image.jpg
-    ├── third-image.jpg
-    └── forth-image.jpg
+    ├── first-image.jpeg
+    ├── second-image.jpeg
+    ├── third-image.jpeg
+    └── fourth-image.jpeg
 ```
 ## 📸 Project Screenshots
 
