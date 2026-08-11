@@ -2,8 +2,7 @@
 
 <div align="center">
 
-<img src="./assets/docker-networking-architecture.png" alt="Docker Networking Lab Architecture" width="900"/>
-
+<img src="./assets/docker-networking-architecture.jpeg" alt="Docker Networking Lab Architecture" width="900"/>
 ### Hands-on Docker Networking & Container Communication
 
 <p>
