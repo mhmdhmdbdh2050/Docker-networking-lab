@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<img src="./assets/docker-networking-architecture.jpeg" alt="Docker Networking Lab Architecture" width="900"/>
+<img src="./architecture.svg" alt="Docker Networking Lab Architecture" width="900"/>
 
 <h3>Hands-on Docker Networking & Container Communication</h3>
 
@@ -33,6 +33,30 @@ The lab focuses on practical container networking concepts including:
 
 The environment consists of **four Ubuntu containers** distributed across **two isolated Docker bridge networks**.
 
+## 🚀 Quick Start (Docker Compose)
+
+Requirements: Docker Engine with the Compose plugin and Bash. The Compose setup builds an Ubuntu lab image with `ping` and `ip` tools, creates the four containers and two project-scoped bridge networks, and assigns the addresses shown below.
+
+```bash
+./scripts/setup.sh
+./scripts/verify.sh
+```
+
+The verification script checks three permitted paths and one cross-network path that should remain isolated. To inspect addresses:
+
+```bash
+docker compose exec cont3 ip -br address
+docker compose ps
+```
+
+Stop and remove only this Compose project’s containers and networks with:
+
+```bash
+docker compose down
+```
+
+If Docker reports that a subnet overlaps an existing host or Docker route, update both the subnet and assigned addresses in `docker-compose.yml` and the corresponding README examples. Do not run the manual CLI setup and Compose setup at the same time; both use the same subnets.
+
 ---
 
 ## 🏗️ Network Architecture
@@ -46,7 +70,7 @@ The lab uses two custom Docker bridge networks:
                  │                         │
           ┌──────▼──────┐           ┌──────▼──────┐
           │  network1   │           │  network2   │
-          │172.18.0.0/16│           │ 10.0.0.0/16 │
+          │172.29.10.0/24│           │ 10.30.10.0/24 │
           └──────┬──────┘           └──────┬──────┘
                  │                         │
           ┌──────┼──────┐                  │
@@ -57,7 +81,7 @@ The lab uses two custom Docker bridge networks:
                          │
                   Second Interface
                          │
-                    10.0.0.2
+                    10.30.10.2
                          │
                          ▼
                       network2
@@ -66,20 +90,20 @@ The lab uses two custom Docker bridge networks:
 ### Network 1
 
 ```text
-Network: 172.18.0.0/16
+Network: 172.29.10.0/24
 
-cont1 → 172.18.0.2
-cont2 → 172.18.0.3
-cont3 → 172.18.0.4
+cont1 → 172.29.10.2
+cont2 → 172.29.10.3
+cont3 → 172.29.10.4
 ```
 
 ### Network 2
 
 ```text
-Network: 10.0.0.0/16
+Network: 10.30.10.0/24
 
-cont3 → 10.0.0.2
-cont4 → 10.0.0.3
+cont3 → 10.30.10.2
+cont4 → 10.30.10.3
 ```
 
 `cont3` is a **multi-homed container** because it is connected to both Docker networks.
@@ -92,11 +116,11 @@ cont4 → 10.0.0.3
 
 | Container | Network | IP Address | Role |
 |-----------|---------|------------|------|
-| `cont1` | `network1` | `172.18.0.2` | Network 1 container |
-| `cont2` | `network1` | `172.18.0.3` | Network 1 container |
-| `cont3` | `network1` | `172.18.0.4` | Multi-network container |
-| `cont3` | `network2` | `10.0.0.2` | Multi-network container |
-| `cont4` | `network2` | `10.0.0.3` | Network 2 container |
+| `cont1` | `network1` | `172.29.10.2` | Network 1 container |
+| `cont2` | `network1` | `172.29.10.3` | Network 1 container |
+| `cont3` | `network1` | `172.29.10.4` | Multi-network container |
+| `cont3` | `network2` | `10.30.10.2` | Multi-network container |
+| `cont4` | `network2` | `10.30.10.3` | Network 2 container |
 
 ---
 
@@ -107,14 +131,14 @@ cont4 → 10.0.0.3
 ```bash
 docker network create \
   --driver bridge \
-  --subnet 172.18.0.0/16 \
+  --subnet 172.29.10.0/24 \
   network1
 ```
 
 ```bash
 docker network create \
   --driver bridge \
-  --subnet 10.0.0.0/16 \
+  --subnet 10.30.10.0/24 \
   network2
 ```
 
@@ -126,7 +150,7 @@ docker network create \
 docker run -dit \
   --name cont1 \
   --network network1 \
-  --ip 172.18.0.2 \
+  --ip 172.29.10.2 \
   ubuntu bash
 ```
 
@@ -136,7 +160,7 @@ docker run -dit \
 docker run -dit \
   --name cont2 \
   --network network1 \
-  --ip 172.18.0.3 \
+  --ip 172.29.10.3 \
   ubuntu bash
 ```
 
@@ -146,7 +170,7 @@ docker run -dit \
 docker run -dit \
   --name cont3 \
   --network network1 \
-  --ip 172.18.0.4 \
+  --ip 172.29.10.4 \
   ubuntu bash
 ```
 
@@ -156,7 +180,7 @@ docker run -dit \
 docker run -dit \
   --name cont4 \
   --network network2 \
-  --ip 10.0.0.3 \
+  --ip 10.30.10.3 \
   ubuntu bash
 ```
 
@@ -164,7 +188,7 @@ docker run -dit \
 
 ```bash
 docker network connect \
-  --ip 10.0.0.2 \
+  --ip 10.30.10.2 \
   network2 \
   cont3
 ```
@@ -172,22 +196,21 @@ docker network connect \
 At this point, `cont3` has two network interfaces:
 
 ```text
-network1 → 172.18.0.4
-network2 → 10.0.0.2
+network1 → 172.29.10.4
+network2 → 10.30.10.2
 ```
 
 ---
 
 ## ⚙️ Automated Setup
 
-The repository includes a Bash setup script that automates the creation and configuration of the Docker networking lab.
+The Bash setup script builds and starts the declared Compose topology. Unlike the previous sequence of `docker network create` and `docker run` commands, Compose reports actual setup errors and scopes created resources to this project.
 
 ```bash
-chmod +x scripts/setup.sh
 ./scripts/setup.sh
 ```
 
-The script creates:
+The Compose project creates:
 
 - `network1`
 - `network2`
@@ -196,7 +219,7 @@ The script creates:
 - `cont3`
 - `cont4`
 
-It also connects `cont3` to both Docker networks and displays the resulting configuration.
+It connects `cont3` to both Docker networks. `scripts/verify.sh` then tests the expected connectivity and isolation.
 
 ---
 
@@ -225,13 +248,13 @@ apt install -y iputils-ping
 
 ```bash
 # cont1 → cont2
-ping 172.18.0.3
+ping 172.29.10.3
 
 # cont1 → cont3
-ping 172.18.0.4
+ping 172.29.10.4
 
 # cont4 → cont3
-ping 10.0.0.2
+ping 10.30.10.2
 ```
 
 Containers connected to the same Docker bridge network can communicate directly.
@@ -246,7 +269,7 @@ For example:
 
 ```bash
 # cont4 → cont2
-ping 172.18.0.3
+ping 172.29.10.3
 ```
 
 This communication is not expected to succeed because `cont4` belongs to `network2`, while `cont2` belongs only to `network1`.
@@ -269,6 +292,8 @@ This demonstrates Docker's default network isolation between separate bridge net
 ---
 
 ## 📸 Test Results
+
+The screenshots below document an earlier manual run and show the previous IP ranges. The current Compose topology and verification script are authoritative for the default addresses.
 
 ### Container Connectivity Testing
 
@@ -344,18 +369,18 @@ A container connected to multiple networks does **not** automatically become a r
 
 ```text
              network1
-          172.18.0.0/16
+          172.29.10.0/24
                 │
               cont3
                 │
         ┌───────┴───────┐
         │               │
-  172.18.0.4        10.0.0.2
+  172.29.10.4        10.30.10.2
         │               │
         └───────┬───────┘
                 │
              network2
-           10.0.0.0/16
+           10.30.10.0/24
 ```
 
 `cont3` has interfaces on both networks, but forwarding traffic between them requires explicit IP forwarding and routing configuration.
@@ -368,12 +393,13 @@ A container connected to multiple networks does **not** automatically become a r
 Docker-networking-lab/
 │
 ├── README.md
-│
-├── assets/
-│   └── docker-networking-architecture.png
-│
+├── Dockerfile
+├── docker-compose.yml
+├── architecture.svg
+├── .github/workflows/validate.yml
 ├── scripts/
-│   └── setup.sh
+│   ├── setup.sh
+│   └── verify.sh
 │
 └── screenshots/
     ├── first-image.jpeg

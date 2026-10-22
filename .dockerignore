@@ -1,0 +1,7 @@
+.git
+.github
+README.md
+architecture.svg
+screenshots/
+scripts/
+docker-compose.yml

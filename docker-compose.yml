@@ -1,0 +1,44 @@
+x-lab-container: &lab-container
+  build:
+    context: .
+    dockerfile: Dockerfile
+  command: ["sleep", "infinity"]
+
+services:
+  cont1:
+    <<: *lab-container
+    networks:
+      network1:
+        ipv4_address: 172.29.10.2
+
+  cont2:
+    <<: *lab-container
+    networks:
+      network1:
+        ipv4_address: 172.29.10.3
+
+  cont3:
+    <<: *lab-container
+    networks:
+      network1:
+        ipv4_address: 172.29.10.4
+      network2:
+        ipv4_address: 10.30.10.2
+
+  cont4:
+    <<: *lab-container
+    networks:
+      network2:
+        ipv4_address: 10.30.10.3
+
+networks:
+  network1:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.29.10.0/24
+  network2:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.30.10.0/24

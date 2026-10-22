@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="510" viewBox="0 0 1040 510" role="img" aria-labelledby="title desc">
+  <title id="title">Docker networking lab topology</title>
+  <desc id="desc">Two isolated Docker bridge networks. Container 3 has an interface on both networks, but is not configured to route between them.</desc>
+  <defs>
+    <style>
+      text { font-family: Arial, Helvetica, sans-serif; fill: #172033; }
+      .title { font-size: 27px; font-weight: 700; }
+      .subtitle { font-size: 15px; fill: #526176; }
+      .network { font-size: 19px; font-weight: 700; }
+      .subnet { font-size: 14px; fill: #526176; }
+      .name { font-size: 16px; font-weight: 700; }
+      .ip { font-size: 13px; fill: #43536b; }
+      .note { font-size: 14px; }
+      .small { font-size: 12px; fill: #526176; }
+    </style>
+  </defs>
+  <rect width="1040" height="510" rx="18" fill="#f7f9fc"/>
+  <text x="520" y="43" text-anchor="middle" class="title">Docker Networking Lab</text>
+  <text x="520" y="69" text-anchor="middle" class="subtitle">Four Ubuntu containers · two isolated bridge networks · static IPv4</text>
+
+  <rect x="35" y="100" width="470" height="260" rx="16" fill="#effaf4" stroke="#27945d" stroke-width="2"/>
+  <text x="270" y="133" text-anchor="middle" class="network" fill="#167346">network1</text>
+  <text x="270" y="155" text-anchor="middle" class="subnet">172.29.10.0/24</text>
+
+  <rect x="535" y="100" width="470" height="260" rx="16" fill="#eef5ff" stroke="#3975c5" stroke-width="2"/>
+  <text x="770" y="133" text-anchor="middle" class="network" fill="#245a9e">network2</text>
+  <text x="770" y="155" text-anchor="middle" class="subnet">10.30.10.0/24</text>
+
+  <g>
+    <rect x="60" y="184" width="125" height="108" rx="12" fill="#fff" stroke="#a8d9bd"/>
+    <text x="122" y="224" text-anchor="middle" class="name">cont1</text>
+    <text x="122" y="252" text-anchor="middle" class="ip">172.29.10.2</text>
+    <text x="122" y="273" text-anchor="middle" class="small">Ubuntu</text>
+  </g>
+  <g>
+    <rect x="207" y="184" width="125" height="108" rx="12" fill="#fff" stroke="#a8d9bd"/>
+    <text x="269" y="224" text-anchor="middle" class="name">cont2</text>
+    <text x="269" y="252" text-anchor="middle" class="ip">172.29.10.3</text>
+    <text x="269" y="273" text-anchor="middle" class="small">Ubuntu</text>
+  </g>
+  <g>
+    <rect x="354" y="184" width="125" height="108" rx="12" fill="#fff" stroke="#a8d9bd"/>
+    <text x="416" y="224" text-anchor="middle" class="name">cont3</text>
+    <text x="416" y="252" text-anchor="middle" class="ip">172.29.10.4</text>
+    <text x="416" y="273" text-anchor="middle" class="small">Ubuntu · interface 1</text>
+  </g>
+
+  <g>
+    <rect x="585" y="184" width="160" height="108" rx="12" fill="#fff" stroke="#b7cbed"/>
+    <text x="665" y="224" text-anchor="middle" class="name">cont3</text>
+    <text x="665" y="252" text-anchor="middle" class="ip">10.30.10.2</text>
+    <text x="665" y="273" text-anchor="middle" class="small">Ubuntu · interface 2</text>
+  </g>
+  <g>
+    <rect x="775" y="184" width="160" height="108" rx="12" fill="#fff" stroke="#b7cbed"/>
+    <text x="855" y="224" text-anchor="middle" class="name">cont4</text>
+    <text x="855" y="252" text-anchor="middle" class="ip">10.30.10.3</text>
+    <text x="855" y="273" text-anchor="middle" class="small">Ubuntu</text>
+  </g>
+
+  <path d="M480 318 C530 386, 580 386, 635 318" fill="none" stroke="#7554b5" stroke-width="2.5" stroke-dasharray="7 6"/>
+  <text x="555" y="393" text-anchor="middle" class="small" fill="#62449a">Same multi-homed container</text>
+
+  <rect x="85" y="425" width="870" height="54" rx="12" fill="#fff8e8" stroke="#e5c36e"/>
+  <text x="520" y="448" text-anchor="middle" class="note" font-weight="700">Two interfaces do not make cont3 a router.</text>
+  <text x="520" y="468" text-anchor="middle" class="small">Cross-network forwarding remains disabled; verify allowed and isolated paths with scripts/verify.sh.</text>
+</svg>
